@@ -1,8 +1,7 @@
 package ru.nvasilishin.vkfriends;
 
 import android.app.Application;
-import android.content.Intent;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
@@ -13,12 +12,14 @@ import com.vk.sdk.VKSdk;
  */
 public class VkApplication extends Application {
 
+    public static String TAG = "ApplicationTag";
+
     VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {
         @Override
         public void onVKAccessTokenChanged(VKAccessToken oldToken, VKAccessToken newToken) {
             if (newToken == null) {
-                forward();
-                Toast.makeText(getApplicationContext(), "AccessToken is Invalid", Toast.LENGTH_SHORT).show();
+                //redirect to AuthActivity?
+                Log.d(TAG, "AccessToken is Invalid");
             }
         }
     };
@@ -26,18 +27,12 @@ public class VkApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(getApplicationContext(), "At Application onCreate()", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "At Application onCreate()");
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
         VKSdk.logout();
-        Toast.makeText(this, "Logged: " + VKSdk.isLoggedIn(), Toast.LENGTH_SHORT).show();
-        forward();
     }
 
-    private void forward(){
-        Class activityClass = VKSdk.isLoggedIn() ? FriendsActivity.class : AuthActivity.class;
-        Intent intent = new Intent(this, activityClass);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        startActivity(intent);
-    }
+
+
 }
