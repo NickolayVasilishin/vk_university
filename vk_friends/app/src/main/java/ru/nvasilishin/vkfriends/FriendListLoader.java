@@ -2,7 +2,6 @@ package ru.nvasilishin.vkfriends;
 
 import android.util.Log;
 
-import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
@@ -13,26 +12,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 /**
  * Created by n.vasilishin on 22.12.2015.
  */
 public class FriendListLoader {
     private static final String TAG = "FriendListLoaderTag";
     private JSONArray response;
+    UserItem[] friends;
 
-    public UserItem[] getFriends(){
-        ArrayList<UserItem> friends = new ArrayList<>();
-        VKRequest request = new VKRequest("users.get", VKParameters.from(VKApiConst.USER_IDS, user_ids_for_req, VKApiConst.FIELDS, "photo_100,online"));
+    public FriendListLoader load(){
+        VKRequest request = new VKRequest("users.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online"));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
-                try {
-                    FriendListLoader.this.response = response.json.getJSONArray("response");
-                } catch (JSONException e) {
-                    Log.e(TAG, "Unhandled JSON response. ", e);
-                }
+                    Log.d(TAG, FriendListLoader.this.response.toString());
+                    parseResponse(response);
             }
             @Override
             public void onError(VKError error) {
@@ -43,18 +37,25 @@ public class FriendListLoader {
                 //I don't really believe in progress
             }
         });
+        return this;
+    }
 
-        for(int i = 0; i < response.length(); i ++){
-            try {
+    private void parseResponse(VKResponse VKResponse){
+        try {
+            JSONArray response = VKResponse.json.getJSONObject("response").getJSONArray("items");
+            UserItem[] friends = new UserItem[response.length()];
+            for(int i = 0; i < response.length(); i ++) {
                 JSONObject item = response.getJSONObject(i);
-                UserItem user = new UserItem(item.getLong("id"), item.getString("photo_100"), item.getString("firstname"), item.getString("lastname"), item.getInt("online") == 1 ? true : false)
-                friends.add(user);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                UserItem user = new UserItem(item.getLong("id"), item.getString("photo_100"), item.getString("firstname"), item.getString("lastname"), item.getInt("online") == 1);
+                friends[i] = user;
             }
-
+            this.friends = friends;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+    }
 
-        return null;
+    public UserItem[] getFriends(){
+        return friends;
     }
 }

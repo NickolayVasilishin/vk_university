@@ -1,5 +1,6 @@
 package ru.nvasilishin.vkfriends;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,13 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Николай on 24.12.2015.
  */
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
+    private Context mContext;
     private UserItem[] mFriends;
+
+    public FriendListAdapter(UserItem[] friends, Context context) {
+        mFriends = friends;
+        mContext = context;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -24,7 +31,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.photoView.setImageBitmap(mFriends[position].getPhotoIcon());
+        Picasso.with(mContext).load(mFriends[position].getPhotoIcon()).resize(64, 64).centerCrop().into(holder.photoView);
         holder.nameView.setText(mFriends[position].getName());
         holder.onlineView.setText(mFriends[position].isOnline() ? R.string.user_online : R.string.user_offline);
     }
@@ -34,9 +41,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         return mFriends.length;
     }
 
-    public FriendListAdapter(UserItem[] friends) {
-        mFriends = friends;
-    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView photoView;

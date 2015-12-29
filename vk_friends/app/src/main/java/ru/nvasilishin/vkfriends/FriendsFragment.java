@@ -17,6 +17,7 @@ public class FriendsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private FriendListLoader mFriendListLoader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,7 +26,7 @@ public class FriendsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new FriendListAdapter(new UserItem[2]);
+        mAdapter = new FriendListAdapter(new UserItem[2], view.getContext());
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }

@@ -1,29 +1,19 @@
 package ru.nvasilishin.vkfriends;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by n.vasilishin on 22.12.2015.
  */
 public class UserItem {
 
-    private long id;
-    private Bitmap photoIcon;
+    private final long id;
+    private String photoIcon;
     private String firstname;
     private String lastname;
     private boolean isOnline;
 
-    public UserItem(long id, Bitmap photoIcon, String firstname, String lasttname, boolean isOnline){
+    public UserItem(long id, String photoIcon, String firstname, String lastname, boolean isOnline){
         this.id = id;
         this.photoIcon = photoIcon;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.isOnline = isOnline;
-    }
-
-    public UserItem(long id, String photoIcon, String firstname, String lasttname, boolean isOnline){
-        this.id = id;
-        //this.photoIcon = photoIcon;
         this.firstname = firstname;
         this.lastname = lastname;
         this.isOnline = isOnline;
@@ -33,12 +23,12 @@ public class UserItem {
         return id;
     }
 
-    public Bitmap getPhotoIcon() {
+    public String getPhotoIcon() {
         return photoIcon;
     }
 
     public String getName(){
-        return firstname + " " + lastname;
+        return getFirstname() + " " + getLastname();
     }
 
     public String getFirstname() {
@@ -61,6 +51,6 @@ public class UserItem {
 
     @Override
     public String toString() {
-        return "Friend Name";
+        return "" + getId() + " " + getName() + " " + isOnline();
     }
 }
