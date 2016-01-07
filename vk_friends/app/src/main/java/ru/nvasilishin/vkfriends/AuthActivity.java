@@ -42,7 +42,7 @@ public class AuthActivity extends Activity {
 
             @Override
             public void onError(VKError error) {
-                Toast.makeText(getApplicationContext(), "You must log in to proceed.", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "You must log in to proceed.", Toast.LENGTH_SHORT).show();
                 AuthActivity.this.finish();
             }
         })) {

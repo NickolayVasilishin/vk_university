@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
  * Created by n.vasilishin on 22.12.2015.
  */
 public class FriendsFragment extends Fragment {
+    private static final String TAG = "FriendsFragmentTag";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -22,11 +24,14 @@ public class FriendsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
+        Log.d(TAG, "At onCreateView");
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new FriendListAdapter(new UserItem[2], view.getContext());
+        //THIS
+        mFriendListLoader = new FriendListLoader().loadToAdapter(mAdapter, view.getContext());
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }
