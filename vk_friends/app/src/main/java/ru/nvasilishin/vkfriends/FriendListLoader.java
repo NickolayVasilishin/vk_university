@@ -43,12 +43,12 @@ public class FriendListLoader {
         return this;
     }
 
-    //THIS
-    public FriendListLoader loadToAdapter(RecyclerView.Adapter adapter, Context context){
-        load();
-        adapter = new FriendListAdapter(getFriends(), context);
-        return this;
-    }
+//    //THIS
+//    public FriendListLoader loadToAdapter(RecyclerView.Adapter adapter, Context context){
+//        load();
+//        adapter = new FriendListAdapter(getFriends(), context);
+//        return this;
+//    }
 
     private void parseResponse(VKResponse VKResponse){
         try {
