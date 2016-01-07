@@ -19,7 +19,7 @@ public class VkApplication extends Application {
         public void onVKAccessTokenChanged(VKAccessToken oldToken, VKAccessToken newToken) {
             if (newToken == null) {
                 //redirect to AuthActivity?
-                Log.d(TAG, "AccessToken is Invalid");
+                Log.e(TAG, "AccessToken is Invalid");
             }
         }
     };
@@ -27,10 +27,9 @@ public class VkApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "At Application onCreate()");
+        Log.d(TAG, "At onCreate()");
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
-        VKSdk.logout();
     }
 
 

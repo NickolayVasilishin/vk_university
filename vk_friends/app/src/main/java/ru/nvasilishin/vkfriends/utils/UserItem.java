@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends;
+package ru.nvasilishin.vkfriends.utils;
 
 /**
  * Created by n.vasilishin on 22.12.2015.

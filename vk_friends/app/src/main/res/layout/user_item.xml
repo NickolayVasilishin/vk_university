@@ -5,6 +5,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textColor="#2e3033"
-        android:typeface="normal"
+        android:fontFamily="Roboto"
         android:layout_toRightOf="@id/user_photo"/>
     
     <TextView
@@ -32,6 +33,7 @@
         android:layout_marginTop="4dp"
         android:textSize="14sp"
         android:textColor="#909499"
+        android:fontFamily="Roboto"
         android:layout_below="@id/user_name"
         android:layout_toRightOf="@id/user_photo"/>
 

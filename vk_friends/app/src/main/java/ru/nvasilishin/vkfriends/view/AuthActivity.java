@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends;
+package ru.nvasilishin.vkfriends.view;
 
 import android.app.Activity;
 import android.content.Intent;

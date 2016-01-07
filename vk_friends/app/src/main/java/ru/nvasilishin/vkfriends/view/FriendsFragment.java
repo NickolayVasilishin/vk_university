@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends;
+package ru.nvasilishin.vkfriends.view;
 
 
 import android.app.Fragment;
@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import ru.nvasilishin.vkfriends.utils.FriendListLoader;
+import ru.nvasilishin.vkfriends.R;
 
 /**
  * Created by n.vasilishin on 22.12.2015.
@@ -30,9 +33,7 @@ public class FriendsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mFriendListLoader = new FriendListLoader().load();
-        mAdapter = new FriendListAdapter(mFriendListLoader.getFriends(), view.getContext());
-        mRecyclerView.setAdapter(mAdapter);
+        mFriendListLoader = new FriendListLoader(mRecyclerView, view.getContext()).load();
         return view;
     }
 

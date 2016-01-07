@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends;
+package ru.nvasilishin.vkfriends.view;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import ru.nvasilishin.vkfriends.R;
+import ru.nvasilishin.vkfriends.utils.UserItem;
 
 /**
  * Created by Николай on 24.12.2015.
