@@ -23,7 +23,7 @@ public class AuthActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(!VKSdk.isLoggedIn()) {
-            Log.d(TAG, "Isn't logged in. Starting VKSdk login().");
+            Log.d(TAG, "Isn't logged in. Starting VKSdk.login().");
             VKSdk.login(this, ACTIVITY_SERVICE);
         } else {
             Log.d(TAG, "Logged in. Forwarding to Friends Activity.");
@@ -36,7 +36,7 @@ public class AuthActivity extends Activity {
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
             @Override
             public void onResult(VKAccessToken res) {
-                Log.d(TAG, "Success result, starting friends activity");
+                Log.d(TAG, "Success result, starting Friends Activity");
                 forward();
             }
 

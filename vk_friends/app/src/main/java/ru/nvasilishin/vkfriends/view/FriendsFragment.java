@@ -20,7 +20,7 @@ public class FriendsFragment extends Fragment {
     private static final String TAG = "FriendsFragmentTag";
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    //private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FriendListLoader mFriendListLoader;
 
@@ -40,7 +40,5 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
 }

@@ -5,48 +5,48 @@ package ru.nvasilishin.vkfriends.utils;
  */
 public class UserItem {
 
-    private final long id;
-    private String photoIcon;
-    private String firstname;
-    private String lastname;
-    private boolean isOnline;
+    private final long mId;
+    private String mPhotoIcon;
+    private String mFirstname;
+    private String mLastname;
+    private boolean mOnline;
 
     public UserItem(long id, String photoIcon, String firstname, String lastname, boolean isOnline){
-        this.id = id;
-        this.photoIcon = photoIcon;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.isOnline = isOnline;
+        mId = id;
+        mPhotoIcon = photoIcon;
+        mFirstname = firstname;
+        mLastname = lastname;
+        mOnline = isOnline;
     }
 
     public long getId() {
-        return id;
+        return mId;
     }
 
     public String getPhotoIcon() {
-        return photoIcon;
+        return mPhotoIcon;
     }
 
     public String getName(){
-        return getFirstname() + " " + getLastname();
+        return getmFirstname() + " " + getLastname();
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getmFirstname() {
+        return mFirstname;
     }
 
 
     public String getLastname() {
-        return lastname;
+        return mLastname;
     }
 
     public boolean isOnline() {
-        return isOnline;
+        return mOnline;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return (int) (mId ^ (mId >>> 32));
     }
 
     @Override
