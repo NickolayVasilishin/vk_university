@@ -1,6 +1,7 @@
 package ru.nvasilishin.vkfriends.utils;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -21,9 +22,10 @@ import ru.nvasilishin.vkfriends.view.FriendListAdapter;
  *  Loads friends and fills given RecyclerView.
  *
  */
-public class FriendListLoader {
+public class FriendListLoader implements Runnable{
     private static final String TAG = "FriendListLoaderTag";
     private UserItem[] mFriends;
+    private volatile boolean isLoading = false;
 
     private RecyclerView mView;
     private Context mContext;
@@ -41,6 +43,40 @@ public class FriendListLoader {
         mContext = context;
     }
 
+
+    public void loadAsync() {
+        Log.d(TAG, "Starting async loading.");
+        isLoading = true;
+        Handler h = new Handler();
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+
+                new VKRequest("friends.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online")).
+                        executeSyncWithListener(new VKRequest.VKRequestListener() {
+                            @Override
+                            public void onComplete(VKResponse response) {
+                                synchronized (mFriends) {
+                                    parseResponse(response);
+                                    isLoading = false;
+                                    notifyAll();
+                                }
+                            }
+
+                            @Override
+                            public void onError(VKError error) {
+                                synchronized (mFriends) {
+                                    isLoading = false;
+                                }
+                                Log.e(TAG, "onError: " + error.toString());
+                            }
+                        });
+            }
+        });
+
+    }
+
+    @Deprecated
     public FriendListLoader load(){
         Log.d(TAG, "Building request");
         VKRequest request = new VKRequest("friends.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online"));
@@ -64,7 +100,7 @@ public class FriendListLoader {
         return this;
     }
 
-    private void parseResponse(VKResponse vkResponse){
+    private UserItem[] parseResponse(VKResponse vkResponse){
         try {
             JSONArray response = vkResponse.json.getJSONObject("response").getJSONArray("items");
             UserItem[] friends = new UserItem[response.length()];
@@ -74,18 +110,37 @@ public class FriendListLoader {
             }
             mFriends = friends;
             Log.d(TAG, "Parsed " + friends.length + " users. The last user is " + friends[friends.length-1]);
+
         } catch (JSONException e) {
             Log.e(TAG, "JSON exception", e);
             e.printStackTrace();
         }
+        //
+        return mFriends;
     }
 
-    public UserItem[] getFriends(){
+    public UserItem[] getFriendsOrWait(){
+        synchronized (mFriends) {
+            if (mFriends == null && isLoading)
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            if (mFriends == null && !isLoading)
+                throw new IllegalStateException("Friends have not been loaded yet. Call load before getting friends");
+            if
+        }
         return mFriends;
     }
 
     public FriendListLoader fillView(RecyclerView recyclerView, Context context) {
         recyclerView.setAdapter(new FriendListAdapter(mFriends, context));
         return this;
+    }
+
+    @Override
+    public void run() {
+
     }
 }
