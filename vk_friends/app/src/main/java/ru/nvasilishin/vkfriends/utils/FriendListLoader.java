@@ -1,8 +1,7 @@
 package ru.nvasilishin.vkfriends.utils;
 
-import android.content.Context;
-import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
+import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.vk.sdk.api.VKApiConst;
@@ -15,80 +14,70 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ru.nvasilishin.vkfriends.view.FriendListAdapter;
-
 /**
- *  Using to load friends via VkSdk.
- *  Loads friends and fills given RecyclerView.
+ *  Using for asynchronous loading friends via VkSdk and AsyncTask.
  *
  */
-public class FriendListLoader implements Runnable{
+public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
     private static final String TAG = "FriendListLoaderTag";
+    //TODO Replace with cache?
     private UserItem[] mFriends;
-    private volatile boolean isLoading = false;
-
-    private RecyclerView mView;
-    private Context mContext;
+    //Using to indicate if data is loading. Otherwise loader state must be checked somehow.
+    private volatile boolean isLoading;
+    private Object mLock;
 
     /*
      * TODO
-     * 1) Replace executeWithListener with executeSyncWithListener
-     * 2) Move execution to background
-     * 3) Write method getOrWait to synchronize execution and avoid NPE at mFriends variable
-     * 4) Remove ugly fillView method
-     * 5) Cache...
+     * 1) Cache...
      */
-    public FriendListLoader(RecyclerView view, Context context){
-        mView = view;
-        mContext = context;
+    public FriendListLoader(){
+        mLock = new Object();
+        mFriends = new UserItem[0];
+        isLoading = false;
     }
 
+    @Override
+    protected Void doInBackground(Void... params) {
+        load();
+        return null;
+    }
 
-    public void loadAsync() {
+    /**
+     * Requests FriendList via VKSdk asynchronously. Executes request in background thread and
+     * stores result at <code>mFriends</code> variable. Use with <code>getFriendsOrWait</code>.
+     * @return
+     */
+    public FriendListLoader loadAsync() {
         Log.d(TAG, "Starting async loading.");
         isLoading = true;
-        Handler h = new Handler();
-        h.post(new Runnable() {
-            @Override
-            public void run() {
-
-                new VKRequest("friends.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online")).
-                        executeSyncWithListener(new VKRequest.VKRequestListener() {
-                            @Override
-                            public void onComplete(VKResponse response) {
-                                synchronized (mFriends) {
-                                    parseResponse(response);
-                                    isLoading = false;
-                                    notifyAll();
-                                }
-                            }
-
-                            @Override
-                            public void onError(VKError error) {
-                                synchronized (mFriends) {
-                                    isLoading = false;
-                                }
-                                Log.e(TAG, "onError: " + error.toString());
-                            }
-                        });
-            }
-        });
-
+        execute();
+        return this;
     }
 
-    @Deprecated
-    public FriendListLoader load(){
-        Log.d(TAG, "Building request");
+    /**
+     * private method based on <code>executeSyncWithListener</code>. This allows to control
+     * loading state and avoid NPE when accessing to <code>mFriends</code> before response received.
+     */
+    private void load(){
+        Log.d(TAG, "Loading data in background");
         VKRequest request = new VKRequest("friends.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online"));
-        request.executeWithListener(new VKRequest.VKRequestListener() {
+        request.executeSyncWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 Log.d(TAG, "Response received.");
-                parseResponse(response);
-                fillView(mView, mContext);
+                UserItem[] friends = parseResponse(response);
+                synchronized (mLock) {
+                    mFriends = friends;
+                    isLoading = false;
+                    mLock.notifyAll();
+                }
             }
             @Override
             public void onError(VKError error) {
+                synchronized (mLock) {
+                    isLoading = false;
+                    mLock.notifyAll();
+                }
                 Log.e(TAG, "onError: " + error.toString());
             }
             @Override
@@ -97,9 +86,9 @@ public class FriendListLoader implements Runnable{
             }
         });
         Log.d(TAG, "Load completed.");
-        return this;
     }
 
+    @Nullable
     private UserItem[] parseResponse(VKResponse vkResponse){
         try {
             JSONArray response = vkResponse.json.getJSONObject("response").getJSONArray("items");
@@ -108,39 +97,37 @@ public class FriendListLoader implements Runnable{
                 JSONObject item = response.getJSONObject(i);
                 friends[i] = new UserItem(item.getLong("id"), item.getString("photo_100"), item.getString("first_name"), item.getString("last_name"), item.getInt("online") == 1);
             }
-            mFriends = friends;
             Log.d(TAG, "Parsed " + friends.length + " users. The last user is " + friends[friends.length-1]);
-
+            return friends;
         } catch (JSONException e) {
             Log.e(TAG, "JSON exception", e);
             e.printStackTrace();
         }
-        //
-        return mFriends;
+        //TODO
+        return null;
     }
 
+    /**
+     * Return friends or wait when request will be finished.
+     * @return mFriends. May be null (after bad parsing or error) or empty.
+     */
     public UserItem[] getFriendsOrWait(){
-        synchronized (mFriends) {
-            if (mFriends == null && isLoading)
+        Log.d(TAG, "Getting friends");
+        /*
+        * TODO check on null -> illegal state
+        * think about other states
+        * where to handle errors?
+        */
+        synchronized (mLock){
+            Log.d(TAG, "Data is" + (isLoading ? "loading" : "not loading"));
+            if(isLoading)
                 try {
-                    wait();
+                    mLock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            if (mFriends == null && !isLoading)
-                throw new IllegalStateException("Friends have not been loaded yet. Call load before getting friends");
-            if
         }
         return mFriends;
     }
 
-    public FriendListLoader fillView(RecyclerView recyclerView, Context context) {
-        recyclerView.setAdapter(new FriendListAdapter(mFriends, context));
-        return this;
-    }
-
-    @Override
-    public void run() {
-
-    }
 }

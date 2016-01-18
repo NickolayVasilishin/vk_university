@@ -20,7 +20,7 @@ public class FriendsFragment extends Fragment {
     private static final String TAG = "FriendsFragmentTag";
 
     private RecyclerView mRecyclerView;
-    //private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FriendListLoader mFriendListLoader;
 
@@ -33,7 +33,9 @@ public class FriendsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mFriendListLoader = new FriendListLoader(mRecyclerView, view.getContext()).load();
+        mFriendListLoader = new FriendListLoader().loadAsync();
+        mAdapter = new FriendListAdapter(mFriendListLoader.getFriendsOrWait(), view.getContext());
+        mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 

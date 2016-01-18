@@ -51,6 +51,6 @@ public class UserItem {
 
     @Override
     public String toString() {
-        return "" + getId() + " " + getName() + " " + isOnline();
+        return "id" + getId() + " " + getName() + ", " + (isOnline() ? "Online" : "Offline");
     }
 }
