@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.vk.sdk.VKServiceActivity" android:label="ServiceActivity" android:theme="@style/VK.Transparent" />
-        <activity android:name=".view.AuthActivity" android:theme="@style/VK.Transparent">
+        <activity android:name=".view.authentication.AuthActivity" android:theme="@style/VK.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.FriendsActivity">
+        <activity android:name=".view.friendlist.FriendsActivity">
 
         </activity>
     </application>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.FriendsActivity"
+    tools:context=".view.friendlist.FriendsActivity"
     android:id="@+id/friendlist_container">
 
 

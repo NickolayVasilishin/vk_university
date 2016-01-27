@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends.view;
+package ru.nvasilishin.vkfriends.view.friendlist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

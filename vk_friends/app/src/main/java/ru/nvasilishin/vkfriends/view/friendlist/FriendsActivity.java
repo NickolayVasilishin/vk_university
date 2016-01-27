@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends.view;
+package ru.nvasilishin.vkfriends.view.friendlist;
 
 import android.app.FragmentManager;
 import android.os.Bundle;

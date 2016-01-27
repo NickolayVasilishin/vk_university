@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends.view;
+package ru.nvasilishin.vkfriends.view.dialog;
 
 import android.support.v7.app.ActionBarActivity;
 

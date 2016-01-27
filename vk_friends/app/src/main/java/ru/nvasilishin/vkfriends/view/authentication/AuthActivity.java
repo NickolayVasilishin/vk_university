@@ -1,4 +1,4 @@
-package ru.nvasilishin.vkfriends.view;
+package ru.nvasilishin.vkfriends.view.authentication;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
+
+import ru.nvasilishin.vkfriends.view.friendlist.FriendsActivity;
 
 /**
  * Created by n.vasilishin on 16.12.2015.

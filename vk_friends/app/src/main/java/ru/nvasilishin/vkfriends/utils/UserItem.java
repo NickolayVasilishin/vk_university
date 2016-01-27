@@ -4,7 +4,6 @@ package ru.nvasilishin.vkfriends.utils;
  * Created by n.vasilishin on 22.12.2015.
  */
 public class UserItem {
-
     private final long mId;
     private String mPhotoIcon;
     private String mFirstname;
@@ -47,6 +46,16 @@ public class UserItem {
     @Override
     public int hashCode() {
         return (int) (mId ^ (mId >>> 32));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserItem userItem = (UserItem) o;
+
+        return mId == userItem.mId;
     }
 
     @Override
