@@ -3,6 +3,7 @@ package ru.nvasilishin.vkfriends.utils;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.LruCache;
 
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
@@ -14,11 +15,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.NoSuchElementException;
+
 /**
  *  Using for asynchronous loading friends via VkSdk and AsyncTask.
  *
  */
-public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
+public class FriendListLoader extends AsyncTask<LruCache,Void ,Void>{
     private static final String TAG = "FriendListLoaderTag";
     //TODO Replace with cache?
     private UserItem[] mFriends;
@@ -37,17 +40,18 @@ public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        load();
+    protected Void doInBackground(LruCache... params) {
+        loadSync();
+        //params[0].
         return null;
     }
 
     /**
      * Requests FriendList via VKSdk asynchronously. Executes request in background thread and
-     * stores result at <code>mFriends</code> variable. Use with <code>getFriendsOrWait</code>.
+     * stores result at <code>mFriends</code> variable. Use with <code>getOrWait</code>.
      * @return
      */
-    public FriendListLoader loadAsync() {
+    public FriendListLoader load() {
         Log.d(TAG, "Starting async loading.");
         isLoading = true;
         execute();
@@ -58,7 +62,7 @@ public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
      * private method based on <code>executeSyncWithListener</code>. This allows to control
      * loading state and avoid NPE when accessing to <code>mFriends</code> before response received.
      */
-    private void load(){
+    private void loadSync(){
         Log.d(TAG, "Loading data in background");
         VKRequest request = new VKRequest("friends.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online"));
         request.executeSyncWithListener(new VKRequest.VKRequestListener() {
@@ -111,7 +115,7 @@ public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
      * Return friends or wait when request will be finished.
      * @return mFriends. May be null (after bad parsing or error) or empty.
      */
-    public UserItem[] getFriendsOrWait(){
+    public UserItem[] getOrWait(){
         Log.d(TAG, "Getting friends");
         /*
         * TODO check on null -> illegal state

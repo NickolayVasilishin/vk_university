@@ -33,8 +33,8 @@ public class FriendsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mFriendListLoader = new FriendListLoader().loadAsync();
-        mAdapter = new FriendListAdapter(mFriendListLoader.getFriendsOrWait(), view.getContext());
+        mFriendListLoader = new FriendListLoader().load();
+        mAdapter = new FriendListAdapter(mFriendListLoader.getOrWait(), view.getContext());
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }
