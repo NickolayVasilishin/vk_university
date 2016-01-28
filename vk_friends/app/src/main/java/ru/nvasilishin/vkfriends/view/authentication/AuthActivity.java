@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
+import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
@@ -26,7 +27,7 @@ public class AuthActivity extends Activity {
         super.onCreate(savedInstanceState);
         if(!VKSdk.isLoggedIn()) {
             Log.d(TAG, "Isn't logged in. Starting VKSdk.login().");
-            VKSdk.login(this, ACTIVITY_SERVICE);
+            VKSdk.login(this, VKScope.MESSAGES, VKScope.FRIENDS);
         } else {
             Log.d(TAG, "Logged in. Forwarding to Friends Activity.");
             forward();

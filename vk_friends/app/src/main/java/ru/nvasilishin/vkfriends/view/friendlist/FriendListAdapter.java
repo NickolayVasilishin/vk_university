@@ -72,10 +72,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             Log.d(TAG, "Starting new dialog activity with id" + id);
             Bundle bundle = new Bundle();
             bundle.putLong("id", id);
+
             //TODO Choose proper intent flag
             Intent intent = new Intent(v.getContext(), DialogActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            v.getContext().startActivity(intent, bundle);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtras(bundle);
+            v.getContext().startActivity(intent);
             Log.d(TAG, "Is it started?");
         }
     }
