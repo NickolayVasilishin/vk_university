@@ -6,7 +6,8 @@
     android:paddingRight="16dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/user_photo"
@@ -35,7 +36,8 @@
         android:textColor="#909499"
         android:fontFamily="Roboto"
         android:layout_below="@id/user_name"
-        android:layout_toRightOf="@id/user_photo"/>
+        android:layout_toRightOf="@id/user_photo"
+        />
 
     
 

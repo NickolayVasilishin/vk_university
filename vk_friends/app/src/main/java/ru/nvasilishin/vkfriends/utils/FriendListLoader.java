@@ -38,16 +38,16 @@ public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
 
     @Override
     protected Void doInBackground(Void... params) {
-        load();
+        loadSync();
         return null;
     }
 
     /**
      * Requests FriendList via VKSdk asynchronously. Executes request in background thread and
      * stores result at <code>mFriends</code> variable. Use with <code>getFriendsOrWait</code>.
-     * @return
+     * @return this
      */
-    public FriendListLoader loadAsync() {
+    public FriendListLoader load() {
         Log.d(TAG, "Starting async loading.");
         isLoading = true;
         execute();
@@ -58,7 +58,7 @@ public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
      * private method based on <code>executeSyncWithListener</code>. This allows to control
      * loading state and avoid NPE when accessing to <code>mFriends</code> before response received.
      */
-    private void load(){
+    private void loadSync(){
         Log.d(TAG, "Loading data in background");
         VKRequest request = new VKRequest("friends.get", VKParameters.from(VKApiConst.SORT, "hints", VKApiConst.FIELDS, "photo_100, online"));
         request.executeSyncWithListener(new VKRequest.VKRequestListener() {

@@ -2,6 +2,7 @@ package ru.nvasilishin.vkfriends.view.friendlist;
 
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import ru.nvasilishin.vkfriends.utils.FriendListLoader;
 import ru.nvasilishin.vkfriends.R;
+import ru.nvasilishin.vkfriends.view.dialog.DialogActivity;
 
 /**
  * Created by n.vasilishin on 22.12.2015.
@@ -29,13 +31,14 @@ public class FriendsFragment extends Fragment {
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         Log.d(TAG, "At onCreateView");
 
+        mFriendListLoader = new FriendListLoader().load();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mFriendListLoader = new FriendListLoader().loadAsync();
         mAdapter = new FriendListAdapter(mFriendListLoader.getFriendsOrWait(), view.getContext());
         mRecyclerView.setAdapter(mAdapter);
+
         return view;
     }
 

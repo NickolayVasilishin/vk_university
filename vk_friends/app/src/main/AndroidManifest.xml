@@ -18,9 +18,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.friendlist.FriendsActivity">
-
-        </activity>
+        <activity android:name=".view.friendlist.FriendsActivity"/>
+        <activity android:name=".view.dialog.DialogActivity"/>
     </application>
 
 </manifest>
