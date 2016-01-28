@@ -18,10 +18,6 @@ public class FriendsActivity extends ActionBarActivity {
         Log.d(TAG, "At FriendsActivity");
         setContentView(R.layout.activity_friends);
 
-        Log.d(TAG, "Starting dialog immediately");
-        Intent intent = new Intent(this, DialogActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
         FragmentManager manager = getFragmentManager();
         manager.beginTransaction().add(R.id.friendlist_container, new FriendsFragment()).commit();
 
