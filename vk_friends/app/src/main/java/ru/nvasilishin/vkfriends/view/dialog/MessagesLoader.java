@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
@@ -13,8 +12,6 @@ import com.vk.sdk.api.model.VKApiGetMessagesResponse;
 import com.vk.sdk.api.model.VKApiMessage;
 import com.vk.sdk.api.model.VKList;
 
-import ru.nvasilishin.vkfriends.utils.UserItem;
-
 /**
  * Created by Nick on 28.01.2016.
  */
@@ -22,14 +19,14 @@ public class MessagesLoader extends AsyncTask<Bundle, Void, Void>{
     private static final String TAG = "MessagesLoaderTag";
     private VKList<VKApiMessage> messages;
     private static final int MESSAGES_COUNT = 50;
-    private final Object lock;
+    private final Object mLock;
     private volatile boolean isLoading;
     //messages.getHistory
     //https://vk.com/dev/messages.getHistory?params[count]=111&params[user_id]=28511609&params[v]=5.44
 
     public MessagesLoader() {
         Log.d(TAG, "Was instantiated");
-        lock = new Object();
+        mLock = new Object();
     }
 
     @Override
@@ -46,6 +43,7 @@ public class MessagesLoader extends AsyncTask<Bundle, Void, Void>{
     }
 
     public MessagesLoader load(long id, long offset){
+        isLoading = true;
         Bundle bundle = new Bundle();
         bundle.putLong("id", id);
         bundle.putLong("offset", offset);
@@ -60,26 +58,47 @@ public class MessagesLoader extends AsyncTask<Bundle, Void, Void>{
             @Override
             public void onComplete(VKResponse response) {
                 Log.d(TAG, "Response received.");
-                synchronized (lock) {
+                synchronized (mLock) {
                     messages = ((VKApiGetMessagesResponse) response.parsedModel).items;
                     isLoading = false;
-                    lock.notifyAll();
+                    mLock.notifyAll();
                 }
                 Log.d(TAG, "" + messages.getCount());
             }
+
             @Override
             public void onError(VKError error) {
                 Log.e(TAG, "onError: " + error.toString());
-                synchronized (lock) {
+                synchronized (mLock) {
                     isLoading = false;
-                    lock.notifyAll();
+                    mLock.notifyAll();
                 }
             }
+
             @Override
             public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
                 Log.d(TAG, "attempt failed: " + request.toString());
             }
         });
         Log.d(TAG, "Load completed.");
+    }
+
+    public VKList<VKApiMessage> getMessagesOrWait(){
+        Log.d(TAG, "Getting messages");
+        /*
+        * TODO check on null -> illegal state
+        * think about other states
+        * where to handle errors?
+        */
+        synchronized (mLock){
+            Log.d(TAG, "Data is" + (isLoading ? "loading" : "not loading"));
+            if(isLoading)
+                try {
+                    mLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+        }
+        return messages;
     }
 }

@@ -1,17 +1,15 @@
 package ru.nvasilishin.vkfriends.view.dialog;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import ru.nvasilishin.vkfriends.R;
 
 /**
  * Created by n.vasilishin on 18.01.2016.
  */
-public class DialogActivity extends ActionBarActivity{
+public class DialogActivity extends AppCompatActivity{
     private static final String TAG = "DialogActivityTag";
 
     @Override

@@ -2,6 +2,9 @@ package ru.nvasilishin.vkfriends.view.dialog;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +21,14 @@ public class DialogFragment extends Fragment{
     private long mId;
     private UserItem mCollocutor;
     private MessagesLoader mLoader;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "Bundle is " + getArguments());
+        Log.d(TAG, "Bundle id is " + getArguments().getLong("id"));
         mId = getArguments().getLong("id");
 
         //Replace with cache
@@ -32,10 +38,16 @@ public class DialogFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.dialog_fragment, container, false);
-        //getActivity().getActionBar().setTitle("" + mId);
+        View view = inflater.inflate(R.layout.fragment_dialog, container, false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("" + mId);
 
         mLoader = new MessagesLoader().load(mId);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.dialog_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(view.getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new MessagesAdapter(mLoader.getMessagesOrWait(), view.getContext());
+        mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 

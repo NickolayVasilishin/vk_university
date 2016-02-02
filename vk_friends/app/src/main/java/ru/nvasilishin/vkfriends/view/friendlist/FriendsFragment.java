@@ -2,7 +2,6 @@ package ru.nvasilishin.vkfriends.view.friendlist;
 
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 
 import ru.nvasilishin.vkfriends.utils.FriendListLoader;
 import ru.nvasilishin.vkfriends.R;
-import ru.nvasilishin.vkfriends.view.dialog.DialogActivity;
 
 /**
  * Created by n.vasilishin on 22.12.2015.
@@ -28,7 +26,7 @@ public class FriendsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.friends_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_friends, container, false);
         Log.d(TAG, "At onCreateView");
 
         mFriendListLoader = new FriendListLoader().load();

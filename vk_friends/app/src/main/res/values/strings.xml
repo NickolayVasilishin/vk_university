@@ -3,4 +3,5 @@
     <integer name="com_vk_sdk_AppId">5190459</integer>
     <string name="user_online">Online</string>
     <string name="user_offline">Offline</string>
+    <string name="dialog_button_send">Send</string>
 </resources>

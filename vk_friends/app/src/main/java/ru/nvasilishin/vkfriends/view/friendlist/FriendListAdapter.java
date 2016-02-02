@@ -1,6 +1,5 @@
 package ru.nvasilishin.vkfriends.view.friendlist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -34,7 +32,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
