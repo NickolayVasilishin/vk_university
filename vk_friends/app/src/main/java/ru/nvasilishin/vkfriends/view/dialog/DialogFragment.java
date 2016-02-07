@@ -16,9 +16,11 @@ import ru.nvasilishin.vkfriends.utils.UserItem;
 /**
  * Created by n.vasilishin on 18.01.2016.
  */
-public class DialogFragment extends Fragment{
+public class DialogFragment extends Fragment {
+    private static final int VISIBLE_TRESHOLD = 10;
     private static final String TAG = "DialogFragmentTag";
     private long mId;
+    private boolean loading = false;
     private UserItem mCollocutor;
     private MessagesLoader mLoader;
     private RecyclerView mRecyclerView;
@@ -44,12 +46,23 @@ public class DialogFragment extends Fragment{
         mLoader = new MessagesLoader().load(mId);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.dialog_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(view.getContext());
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new MessagesAdapter(mLoader.getMessagesOrWait(), view.getContext());
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!loading && mLayoutManager.getItemCount() <= (((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition() + VISIBLE_TRESHOLD)) {
+                        mLoader.load(mId, mLayoutManager.getItemCount());
+                    mAdapter.notifyDataSetChanged();
+                    loading = true;
+                }
+
+            }
+        });
         return view;
     }
-
 
 }
