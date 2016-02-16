@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.vk.sdk.api.model.VKApiUser;
+import com.vk.sdk.api.model.VKList;
 
 import ru.nvasilishin.vkfriends.R;
 import ru.nvasilishin.vkfriends.utils.UserItem;
@@ -23,10 +25,14 @@ import ru.nvasilishin.vkfriends.view.dialog.DialogActivity;
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
     private static final String TAG = "FriendListAdapterTag";
     private Context mContext;
-    private UserItem[] mFriends;
+    //TODO Check if it is reasonable
+    private VKApiUser[] mFriends;
+    private StringBuilder mNameBuilder;
 
-    public FriendListAdapter(UserItem[] friends, Context context) {
-        mFriends = friends;
+    public FriendListAdapter(VKList<VKApiUser> friends, Context context) {
+        mFriends = new VKApiUser[0];
+        mNameBuilder = new StringBuilder();
+        friends.toArray(mFriends);
         mContext = context;
     }
 
@@ -39,10 +45,11 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Picasso.with(mContext).load(mFriends[position].getPhotoIcon()).resize(64, 64).centerCrop().into(holder.photoView);
-        holder.nameView.setText(mFriends[position].getName());
-        holder.onlineView.setText(mFriends[position].isOnline() ? R.string.user_online : R.string.user_offline);
+        Picasso.with(mContext).load(mFriends[position].photo_100).resize(64, 64).centerCrop().into(holder.photoView);
+        holder.nameView.setText(mNameBuilder.append(mFriends[position].first_name).append(mFriends[position].last_name));
+        holder.onlineView.setText(mFriends[position].online ? R.string.user_online : R.string.user_offline);
         holder.id = mFriends[position].getId();
+        mNameBuilder.delete(0, mNameBuilder.length());
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
  *  Using for asynchronous loading friends via VkSdk and AsyncTask.
  *
  */
+@Deprecated
 public class FriendListLoader extends AsyncTask<Void ,Void ,Void>{
     private static final String TAG = "FriendListLoaderTag";
     //TODO Replace with cache?
