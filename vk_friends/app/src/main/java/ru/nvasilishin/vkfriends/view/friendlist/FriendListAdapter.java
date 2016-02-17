@@ -16,7 +16,6 @@ import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKList;
 
 import ru.nvasilishin.vkfriends.R;
-import ru.nvasilishin.vkfriends.utils.UserItem;
 import ru.nvasilishin.vkfriends.view.dialog.DialogActivity;
 
 /**
@@ -26,13 +25,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     private static final String TAG = "FriendListAdapterTag";
     private Context mContext;
     //TODO Check if it is reasonable
-    private VKApiUser[] mFriends;
+    private VKList<VKApiUser> mFriends;
     private StringBuilder mNameBuilder;
 
     public FriendListAdapter(VKList<VKApiUser> friends, Context context) {
-        mFriends = new VKApiUser[0];
+        mFriends = friends;
         mNameBuilder = new StringBuilder();
-        friends.toArray(mFriends);
+//        friends.toArray(mFriends);
         mContext = context;
     }
 
@@ -45,16 +44,16 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Picasso.with(mContext).load(mFriends[position].photo_100).resize(64, 64).centerCrop().into(holder.photoView);
-        holder.nameView.setText(mNameBuilder.append(mFriends[position].first_name).append(mFriends[position].last_name));
-        holder.onlineView.setText(mFriends[position].online ? R.string.user_online : R.string.user_offline);
-        holder.id = mFriends[position].getId();
+        Picasso.with(mContext).load(mFriends.get(position).photo_100).resize(64, 64).centerCrop().into(holder.photoView);
+        holder.nameView.setText(mNameBuilder.append(mFriends.get(position).first_name).append(" ").append(mFriends.get(position).last_name));
+        holder.onlineView.setText(mFriends.get(position).online ? R.string.user_online : R.string.user_offline);
+        holder.id = mFriends.get(position).getId();
         mNameBuilder.delete(0, mNameBuilder.length());
     }
 
     @Override
     public int getItemCount() {
-        return mFriends.length;
+        return mFriends.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
