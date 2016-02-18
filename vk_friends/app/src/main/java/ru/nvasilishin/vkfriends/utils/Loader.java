@@ -17,20 +17,34 @@ import com.vk.sdk.api.model.VKList;
 /**
  * Created by Nick on 15.02.2016.
  */
+//TODO AsyncTask can be executed only once. Alternatives??????????????
+    //Using
 public abstract class Loader<Subject extends VKApiModel & Identifiable> extends AsyncTask<Void, Void, Void> {
 
     private final static int MAX_WAIT_TIME = 100 * 1000;
 
     protected volatile VKRequest mRequest;
-    protected volatile boolean mLoading = false;
-    protected Object mLock = new Object();
+    protected volatile boolean mLoading;
+    protected Object mLock;
     protected VKList<Subject> mResponse;
     @NonNull
     protected Context mContext;
 
+    protected Loader() {
+        mLoading = false;
+        mLock = new Object();
+        mResponse = new VKList<>();
+    }
+
+    protected Loader(Context context) {
+        this();
+        mContext = context;
+    }
+
     public final Loader<Subject> load() {
         Log.d(tag(), "Starting loading");
         prepareRequest();
+        //TODO add state checking
         mLoading = true;
         execute();
         return this;
@@ -46,7 +60,12 @@ public abstract class Loader<Subject extends VKApiModel & Identifiable> extends 
 
 
     public final Loader<Subject> load(long offset, int count) {
-        prepareRequest(offset, count);
+        if (mRequest == null || !mRequest.getMethodParameters().containsKey("offset") || !mRequest.getMethodParameters().containsKey("count"))
+            prepareRequest(offset, count);
+        else {
+            mRequest.addExtraParameter("offset", offset);
+            mRequest.addExtraParameter("count", count);
+        }
         mLoading = true;
         execute();
         return this;
@@ -64,7 +83,6 @@ public abstract class Loader<Subject extends VKApiModel & Identifiable> extends 
     }
 
     protected final void loadSync(){
-        final Boolean result = new Boolean(false);
         mRequest.executeSyncWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -118,6 +136,10 @@ public abstract class Loader<Subject extends VKApiModel & Identifiable> extends 
         Log.e(tag(), error.errorMessage);
     }
 
+    public boolean isLoading() {
+        return mLoading;
+    }
+
     /**
      *
      * @return requested items or null if data wasn't received yet.
@@ -134,7 +156,7 @@ public abstract class Loader<Subject extends VKApiModel & Identifiable> extends 
     public final VKList<Subject> getOrWait() {
         synchronized (mLock) {
             Log.d(tag(), "Data is " + (mLoading ? "loading" : "not loading"));
-            if (!mResponse.isEmpty() && !mLoading) {
+            if (!mLoading && !mResponse.isEmpty()) {
                 return andClean();
             }
             else {

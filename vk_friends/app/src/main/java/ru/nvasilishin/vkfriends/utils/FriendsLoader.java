@@ -19,13 +19,8 @@ public class FriendsLoader extends Loader<VKApiUser> {
     private static String REQUEST_FIELDS = "photo_100, online";
     private static String REQUEST_SORT = "hints";
 
-    public FriendsLoader() {
-        mResponse = new VKList<>();
-    }
-
     public FriendsLoader(Context context) {
-        this();
-        mContext = context;
+       super(context);
     }
 
     @Override
