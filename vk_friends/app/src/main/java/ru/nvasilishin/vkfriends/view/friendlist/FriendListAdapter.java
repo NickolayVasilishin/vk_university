@@ -21,7 +21,7 @@ import ru.nvasilishin.vkfriends.view.dialog.DialogActivity;
 /**
  * Created by Николай on 24.12.2015.
  */
-public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
+public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> implements AppendableAdapter{
     private static final String TAG = "FriendListAdapterTag";
     private Context mContext;
     //TODO Check if it is reasonable
@@ -54,6 +54,18 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     @Override
     public int getItemCount() {
         return mFriends.size();
+    }
+
+
+    @Override
+    public AppendableAdapter append(VKList list) {
+        mFriends.addAll(list);
+        return this;
+    }
+
+    @Override
+    public void notifyAdapter() {
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

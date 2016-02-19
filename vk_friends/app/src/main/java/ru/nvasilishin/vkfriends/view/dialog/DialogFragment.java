@@ -15,6 +15,7 @@ import com.vk.sdk.api.model.VKApiMessage;
 import ru.nvasilishin.vkfriends.R;
 import ru.nvasilishin.vkfriends.utils.DialogLoader;
 import ru.nvasilishin.vkfriends.utils.Loader;
+import ru.nvasilishin.vkfriends.view.friendlist.AppendableAdapter;
 
 /**
  * Created by n.vasilishin on 18.01.2016.
@@ -57,9 +58,8 @@ public class DialogFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!mLoader.isLoading() && mLayoutManager.getItemCount() <= (((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition() + VISIBLE_TRESHOLD)) {
-                        mLoader.load(mLayoutManager.getItemCount(), DialogLoader.DEFAULT_MESSAGES_COUNT);
-                    mAdapter.notifyDataSetChanged();
+                if (/*!mLoader.isLoading() &&*/ mLayoutManager.getItemCount() <= (((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition() + VISIBLE_TRESHOLD)) {
+                    mLoader.load(mLayoutManager.getItemCount(), DialogLoader.DEFAULT_MESSAGES_COUNT).to((AppendableAdapter) mAdapter);
                 }
 
             }

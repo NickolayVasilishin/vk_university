@@ -21,24 +21,35 @@ import ru.nvasilishin.vkfriends.utils.Loader;
  */
 public class FriendsFragment extends Fragment {
     private static final String TAG = "FriendsFragmentTag";
-
+    private static final int VISIBLE_TRESHOLD = 30;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Loader<VKApiUser> mFriendListLoader;
+    private Loader<VKApiUser> mLoader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
         Log.d(TAG, "At onCreateView");
 
-        mFriendListLoader = new FriendsLoader(getActivity()).load();
+        mLoader = new FriendsLoader(getActivity()).load();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new FriendListAdapter(mFriendListLoader.getOrWait(), view.getContext());
+        mAdapter = new FriendListAdapter(mLoader.getOrWait(), view.getContext());
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (mLayoutManager.getItemCount() <= (((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition() + VISIBLE_TRESHOLD)) {
+                    mLoader.load(mLayoutManager.getItemCount(), FriendsLoader.DEFAULT_MESSAGES_COUNT).to((AppendableAdapter)mAdapter);
+                    Log.d(TAG, "Total friends: " + mLayoutManager.getItemCount());
+                }
+
+            }
+        });
 
         return view;
     }

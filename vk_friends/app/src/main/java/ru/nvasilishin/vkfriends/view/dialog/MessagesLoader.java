@@ -15,6 +15,7 @@ import com.vk.sdk.api.model.VKList;
 /**
  * Created by Nick on 28.01.2016.
  */
+@Deprecated
 public class MessagesLoader extends AsyncTask<Bundle, Void, Void>{
     private static final String TAG = "MessagesLoaderTag";
     private VKList<VKApiMessage> messages;

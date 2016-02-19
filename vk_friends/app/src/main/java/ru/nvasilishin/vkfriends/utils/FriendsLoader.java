@@ -15,6 +15,7 @@ import com.vk.sdk.api.model.VKUsersArray;
  * Created by Nick on 16.02.2016.
  */
 public class FriendsLoader extends Loader<VKApiUser> {
+    public static final int DEFAULT_MESSAGES_COUNT = 50;
     private static String METHOD_NAME = "friends.get";
     private static String REQUEST_FIELDS = "photo_100, online";
     private static String REQUEST_SORT = "hints";
@@ -31,7 +32,7 @@ public class FriendsLoader extends Loader<VKApiUser> {
 
     @Override
     protected Loader<VKApiUser> prepareRequest() {
-        mRequest = new VKRequest(METHOD_NAME, VKParameters.from(VKApiConst.SORT, REQUEST_SORT, VKApiConst.FIELDS, REQUEST_FIELDS), VKUsersArray.class);
+        mRequest = new VKRequest(METHOD_NAME, VKParameters.from(VKApiConst.SORT, REQUEST_SORT, VKApiConst.FIELDS, REQUEST_FIELDS, VKApiConst.COUNT, DEFAULT_MESSAGES_COUNT, VKApiConst.OFFSET, 0), VKUsersArray.class);
         return this;
     }
 
@@ -44,7 +45,7 @@ public class FriendsLoader extends Loader<VKApiUser> {
     @Override
     protected VKList<VKApiUser> parse(VKResponse response) {
         VKList<VKApiUser> users;
-        Log.d(tag(), "Parsing response " + response.json.toString().substring(0, 50) + "...");
+        Log.d(tag(), "Parsing response " + response.json.toString().substring(0, 100) + "...");
         if(response.parsedModel instanceof VKUsersArray) {
             users = new VKList<>(response.json, VKApiUser.class);
         } else {

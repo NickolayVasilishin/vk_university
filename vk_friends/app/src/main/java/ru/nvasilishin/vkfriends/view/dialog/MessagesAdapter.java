@@ -17,11 +17,12 @@ import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 
 import ru.nvasilishin.vkfriends.R;
+import ru.nvasilishin.vkfriends.view.friendlist.AppendableAdapter;
 
 /**
  * Created by n.vasilishin on 02.02.2016.
  */
-public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> implements AppendableAdapter{
     private static final String TAG = "MessagesAdapterTag";
     Context mContext;
     VKList<VKApiMessage> mMessages;
@@ -42,7 +43,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         VKApiMessage message = mMessages.get(position);
         holder.text.setText(message.body);
-        Log.d(TAG, "Attachments: " + message.attachments.toAttachmentsString());
+        if (!message.attachments.isEmpty())
+            Log.d(TAG, "Attachments: " + message.attachments.toAttachmentsString());
         if(message.attachments.toAttachmentsString().contains(VKAttachments.TYPE_PHOTO))
             Picasso.with(mContext).load(((VKApiPhoto)message.attachments.get(0)).photo_604).resize(400, 200).centerCrop().into(holder.image);
 
@@ -52,6 +54,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     @Override
     public int getItemCount() {
         return mMessages.getCount();
+    }
+
+    @Override
+    public AppendableAdapter append(VKList list) {
+        mMessages.addAll(list);
+        return this;
+    }
+
+    @Override
+    public void notifyAdapter() {
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
